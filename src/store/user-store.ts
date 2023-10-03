@@ -53,7 +53,8 @@ export const useUserStore = defineStore('user', {
 
                 await setDoc(doc(db, "users", id), { id, name, email, password: hashPassword });
 
-                router.push({ path: '/auth' });
+                alert('Registration Success!');
+                location.reload();
             } catch (error) {
                 alert('Unknown error');
             }

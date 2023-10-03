@@ -1,5 +1,5 @@
 <template>
-    <div class="bg flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="bg w-full flex items-center justify-center min-h-screen bg-gray-100">
         <div class="transition-all duration-500 ease-out px-8 py-8 text-left bg-white shadow-lg">
             <div class="flex items-center justify-center">
                 <img src="../assets/logo.svg" width="100" />

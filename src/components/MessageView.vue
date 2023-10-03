@@ -1,19 +1,10 @@
 <template>
     <div class="h-[100vh]">
         <div class="w-full bg">
-            <div class="border-l border-green-500 w-full">
-                <div class="
-                        bg-[#F0F0F0] 
-                        fixed 
-                        z-10 
-                        min-w-[calc(100vw-420px)] 
-                        flex 
-                        justify-between 
-                        items-center 
-                        px-2 
-                        py-2
-                    ">
+            <div class="w-full">
+                <div :class="headerClass">
                     <div class="flex items-center">
+                        <ArrowBackIcon @click="userStore.selectUser({})" class="cursor-pointer mx-2" fillColor="#515151" />
                         <img class="rounded-full ml-1 w-10" src="https://random.imagecdn.app/100/100" alt="">
                         <div class="text-gray-900 ml-4">
                             {{ selectedUser.name }}
@@ -27,20 +18,11 @@
                 </div>
             </div>
 
-            <div id="MessagesSection" class="
-                pt-20 
-                pb-8 
-                z-[-1]
-                h-[calc(100vh-65px)]
-                w-[calc(100vw-420px)]
-                overflow-auto
-                fixed
-                touch-auto
-            ">
+            <div id="MessagesSection" :class="bodyClass">
                 <MessageRowComponent v-for="chat in chats" :isReceiveMessage="chat.senderId == currentUser.id" :message="chat.message"/>
             </div>
 
-            <div class="w-[calc(100vw-420px)] p-2.5 z-10 bg-[#F0F0F0] fixed bottom-0">
+            <div :class="footerClass">
                 <div class="flex items-center justify-center">
                     <EmoticonExcitedOutlineIcon :size="27" fillColor="#515151" class="mx-1.5" />
                     <PaperclipIcon :size="27" fillColor="#515151" class="mx-1.5 mr-3" />
@@ -72,6 +54,7 @@ import MagnifyIcon from 'vue-material-design-icons/Magnify.vue';
 import EmoticonExcitedOutlineIcon from 'vue-material-design-icons/EmoticonExcitedOutline.vue';
 import PaperclipIcon from 'vue-material-design-icons/Paperclip.vue';
 import SendIcon from 'vue-material-design-icons/Send.vue';
+import ArrowBackIcon from 'vue-material-design-icons/ArrowLeft.vue';
 import moment from 'moment';
 import { useUserStore } from '../store/user-store';
 import { useChatStore } from '../store/chat-store';
@@ -85,10 +68,13 @@ import {
     doc,
 } from 'firebase/firestore';
 import MessageRowComponent from './MessageRowComponent.vue';
+import { useAppStore } from '../store/app-store';
 
 let messageRef = ref('')
+const appStore = useAppStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
+const { isMobileDevice } = storeToRefs(appStore);
 const { selectedUser, currentUser } = storeToRefs(userStore);
 
 const sendMessage = async () => {
@@ -110,14 +96,17 @@ const sendMessage = async () => {
     }
 }
 
-const chats = computed(() => chatStore.userChats.filter(chat => chat.senderId == selectedUser.value.id || chat.receiverId == selectedUser.value.id));
+const chats = computed(() => chatStore.userChats && chatStore.userChats.filter(chat => chat.senderId == selectedUser.value.id || chat.receiverId == selectedUser.value.id));
+const headerClass = computed(() => 'bg-[#F0F0F0] fixed z-10 flex justify-between items-center px-2 py-2 ' + (isMobileDevice.value ? 'w-full' : 'min-w-[calc(100vw-420px)]'));
+const bodyClass = computed(() => 'pt-20 pb-8 z-[-1] h-[calc(100vh-65px)] overflow-auto fixed touch-auto ' + (isMobileDevice.value ? 'w-full' : 'w-[calc(100vw-420px)]'));
+const footerClass = computed(() => 'p-2.5 z-10 bg-[#F0F0F0] fixed bottom-0 ' + (isMobileDevice.value ? 'w-full' : 'w-[calc(100vw-420px)]'));
 </script>
 
 <style>
 .bg {
     background: url('../assets/bg.jpg') no-repeat fixed;
     background-size: cover;
-    width: 100%;
+    /* width: 100%; */
     height: 100%;
     position: fixed;
 }

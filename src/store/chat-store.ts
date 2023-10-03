@@ -8,7 +8,7 @@ import {
     or,
     orderBy,
 } from 'firebase/firestore';
-import { useUserStore } from '../store/user-store';
+import { useUserStore } from './user-store';
 import { storeToRefs } from 'pinia';
 
 export type Chat = {
